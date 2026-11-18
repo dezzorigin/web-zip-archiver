@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Web ZIP Archiver — Diagram Arsitektur</title>
+<style>
+  body { font-family: Inter, system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 32px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  p { color: #64748b; font-size: 14px; margin: 0 0 20px; max-width: 880px; line-height: 1.6; }
+  .wrap { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; max-width: 912px; }
+  svg { display: block; max-width: 100%; height: auto; }
+  .note { font-size: 13px; color: #64748b; margin-top: 16px; max-width: 880px; line-height: 1.6; }
+  code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>Web ZIP Archiver — arsitektur &amp; alur</h1>
+<p>Static export Next.js di Cloudflare Pages + satu Pages Worker (<code>worker/_worker.js</code>) sebagai server API.
+Worker mem-proxy dua rute ke <code>copier.saveweb2zip.com</code> (layanan saveweb2zip.com yang melakukan
+crawling + zipping). File ZIP hasil akhirnya diunduh langsung dari server upstream, bukan dari Pages.</p>
+
+<div class="wrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="660" viewBox="0 0 880 660" role="img" aria-labelledby="t d">
+<title id="t">Arsitektur Web ZIP Archiver</title>
+<desc id="d">Browser pengguna memuat static export dari Cloudflare Pages. Form arsip memanggil /api/clone/start dan /api/clone/status yang dilayani Pages Worker; worker meneruskannya ke copier.saveweb2zip.com. Unduhan ZIP diambil langsung dari upstream.</desc>
+<style>
+  .bg { fill: #f8fafc; }
+  .card { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; }
+  .card-accent { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 1.5; }
+  .card-dark { fill: #18181b; stroke: #18181b; }
+  .ink { fill: #0f172a; font-family: Inter, system-ui, sans-serif; }
+  .mut { fill: #64748b; font-family: Inter, system-ui, sans-serif; }
+  .light { fill: #e4e4e7; font-family: Inter, system-ui, sans-serif; }
+  .lightmut { fill: #a1a1aa; font-family: Inter, system-ui, sans-serif; }
+  .small { font-size: 12px; }
+  .mid { font-size: 13px; font-weight: 600; }
+  .big { font-size: 15px; font-weight: 800; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  .arrow { stroke: #4f46e5; stroke-width: 2; fill: none; marker-end: url(#ah); }
+  .arrow-ghost { stroke: #94a3b8; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; marker-end: url(#ag); }
+  .arrow-down { stroke: #4f46e5; stroke-width: 2; fill: none; marker-end: url(#ah); }
+</style>
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4f46e5"/></marker>
+  <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+</defs>
+
+<rect class="bg" width="880" height="660" rx="8"/>
+
+<text x="40" y="44" class="ink" font-size="20" font-weight="800">Web ZIP Archiver — arsitektur &amp; alur</text>
+<text x="40" y="66" class="mut small">Static export Next.js + Pages Worker. Tanpa database, tanpa akun, tanpa API key.</text>
+
+<!-- Browser -->
+<g>
+  <rect class="card" x="40" y="92" width="240" height="96" rx="12"/>
+  <text x="60" y="122" class="ink big">Browser pengguna</text>
+  <text x="60" y="144" class="mut small">Landing + form arsip</text>
+  <text x="60" y="162" class="mut small">(React, satu halaman)</text>
+  <text x="60" y="180" class="mut mono" fill="#4f46e5">web-zip-archiver.pages.dev</text>
+</g>
+
+<!-- Pages static -->
+<g>
+  <rect class="card" x="320" y="92" width="240" height="96" rx="12"/>
+  <text x="340" y="122" class="ink big">Cloudflare Pages</text>
+  <text x="340" y="144" class="mut small">Static export Next.js</text>
+  <text x="340" y="162" class="mut small">(out/ — HTML, JS, CSS)</text>
+  <text x="340" y="180" class="mut mono">disajikan via ASSETS</text>
+</g>
+
+<!-- Worker -->
+<g>
+  <rect class="card-accent" x="600" y="92" width="240" height="96" rx="12"/>
+  <text x="620" y="122" class="ink big">Pages Worker</text>
+  <text x="620" y="144" class="mut small">worker/_worker.js</text>
+  <text x="620" y="162" class="mut small">POST /api/clone/start</text>
+  <text x="620" y="180" class="mut small">GET /api/clone/status</text>
+</g>
+
+<!-- Upstream -->
+<g>
+  <rect class="card-dark" x="600" y="300" width="240" height="118" rx="12"/>
+  <text x="620" y="330" fill="#fafafa" font-size="15" font-weight="800" font-family="Inter, system-ui, sans-serif">copier.saveweb2zip.com</text>
+  <text x="620" y="352" class="lightmut small">Layanan saveweb2zip.com</text>
+  <text x="620" y="370" class="light small">POST /api/copySite → md5</text>
+  <text x="620" y="388" class="light small">GET /api/getStatus/{md5}</text>
+  <text x="620" y="406" class="light small">GET /api/downloadArchive/{md5}</text>
+</g>
+
+<!-- Arrows top row -->
+<path class="arrow" d="M280 140 H312"/>
+<path class="arrow" d="M560 140 H592"/>
+<path class="arrow" d="M720 188 V292"/>
+<text x="728" y="245" class="mut small">proxy</text>
+
+<!-- Target site -->
+<g>
+  <rect class="card" x="320" y="300" width="240" height="118" rx="12"/>
+  <text x="340" y="330" class="ink big">Situs target (publik)</text>
+  <text x="340" y="352" class="mut small">https://example.com, …</text>
+  <text x="340" y="370" class="mut small">Di-crawl oleh upstream:</text>
+  <text x="340" y="388" class="mut small">HTML, CSS, JS, gambar</text>
+  <text x="340" y="406" class="mut small">+ struktur folder</text>
+</g>
+<path class="arrow-ghost" d="M600 359 H568"/>
+<text x="520" y="345" class="mut small">crawl</text>
+
+<!-- Download path -->
+<g>
+  <rect class="card" x="40" y="300" width="240" height="118" rx="12"/>
+  <text x="60" y="330" class="ink big">Unduhan ZIP</text>
+  <text x="60" y="352" class="mut small">Tombol “Unduh Archive ZIP”</text>
+  <text x="60" y="370" class="mut small">mengarah langsung ke:</text>
+  <text x="60" y="388" class="mut mono" fill="#4f46e5">…/api/downloadArchive/{md5}</text>
+  <text x="60" y="406" class="mut small">File di-host upstream.</text>
+</g>
+<path class="arrow-ghost" d="M600 390 C 480 470, 280 470, 280 412"/>
+<text x="400" y="462" class="mut small">link unduhan (langsung, tanpa lewat Pages)</text>
+
+<!-- Flow steps -->
+<text x="40" y="482" class="ink" font-size="15" font-weight="800">Alur sekali jalan (1–5)</text>
+<g>
+  <rect class="card" x="40" y="500" width="152" height="120" rx="12"/>
+  <text x="56" y="528" class="ink mid">1 · Isi URL</text>
+  <text x="56" y="548" class="mut small">URL https:// + 4 opsi</text>
+  <text x="56" y="566" class="mut small">konfigurasi lanjutan.</text>
+</g>
+<g>
+  <rect class="card" x="204" y="500" width="152" height="120" rx="12"/>
+  <text x="220" y="528" class="ink mid">2 · Start</text>
+  <text x="220" y="548" class="mut small">Worker POST ke</text>
+  <text x="220" y="566" class="mut small">/api/copySite,</text>
+  <text x="220" y="584" class="mut small">balik md5 task.</text>
+</g>
+<g>
+  <rect class="card" x="368" y="500" width="152" height="120" rx="12"/>
+  <text x="384" y="528" class="ink mid">3 · Polling</text>
+  <text x="384" y="548" class="mut small">Tiap 1,5 dtk tanya</text>
+  <text x="384" y="566" class="mut small">/api/clone/status</text>
+  <text x="384" y="584" class="mut small">sampai isFinished.</text>
+</g>
+<g>
+  <rect class="card" x="532" y="500" width="152" height="120" rx="12"/>
+  <text x="548" y="528" class="ink mid">4 · Selesai</text>
+  <text x="548" y="548" class="mut small">Progress penuh,</text>
+  <text x="548" y="566" class="mut small">jumlah file tampil,</text>
+  <text x="548" y="584" class="mut small">tombol unduh muncul.</text>
+</g>
+<g>
+  <rect class="card-accent" x="696" y="500" width="144" height="120" rx="12"/>
+  <text x="712" y="528" class="ink mid">5 · Unduh ZIP</text>
+  <text x="712" y="548" class="mut small">Browser unduh file</text>
+  <text x="712" y="566" class="mut small">langsung dari</text>
+  <text x="712" y="584" class="mut small">upstream.</text>
+</g>
+<path class="arrow" d="M192 560 H196"/>
+<path class="arrow" d="M356 560 H360"/>
+<path class="arrow" d="M520 560 H524"/>
+<path class="arrow" d="M684 560 H688"/>
+</svg>
+</div>
+
+<p class="note"><strong>Kenapa worker, bukan API route Next.js?</strong> Build static export (<code>output: 'export'</code>)
+menolak route handler dinamis apa pun — repo versi lama gagal build karena <code>app/api/clone/*</code>
+(<code>force-dynamic</code> tidak bisa dipakai dengan static export). Logika rute dipindah apa adanya ke
+<code>worker/_worker.js</code>, yang di-deploy bersama <code>out/</code> sebagai <code>_worker.bundle</code>.
+Lihat <code>docs/ARCHITECTURE.md</code> untuk detail dan <code>docs/API.md</code> untuk kontrak tiap rute.</p>
+</body>
+</html>

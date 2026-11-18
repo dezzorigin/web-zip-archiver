@@ -1,3 +1,11 @@
 import type { NextConfig } from 'next';
-const nextConfig: NextConfig = { output: 'export', images: { unoptimized: true }, typescript: { ignoreBuildErrors: true }, eslint: { ignoreDuringBuilds: true } };
+
+const nextConfig: NextConfig = {
+  // Static export untuk Cloudflare Pages. Konsekuensinya: tidak ada API
+  // route di build ini — /api/clone/* dilayani oleh worker/_worker.js
+  // (lihat README & docs/ARCHITECTURE.md).
+  output: 'export',
+  images: { unoptimized: true },
+};
+
 export default nextConfig;
