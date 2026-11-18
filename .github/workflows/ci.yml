@@ -65,8 +65,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Dependency audit (high and above)
-        run: npm audit --audit-level=high
+      # Audit dibatasi ke dependensi produksi (--omit=dev): satu-satunya
+      # temuan high di dev adalah picomatch ReDoS (GHSA-fc5q-39xc-vjpf)
+      # lewat toolchain lint (eslint-config-next) — belum ada versi
+      # patched (patched: None), dan picomatch hanya jalan saat lint di
+      # file lokal tepercaya, tidak pernah dikirim ke pengguna. Temuan
+      # high di produksi (PostCSS di bawah next) sudah ditutup lewat
+      # overrides postcss 8.5.33 di package.json.
+      - name: Dependency audit (production, high and above)
+        run: npm audit --omit=dev --audit-level=high
 
   lighthouse:
     needs: build

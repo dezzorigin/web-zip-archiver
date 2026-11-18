@@ -1,1 +1,39 @@
-{"dependencies":{"clsx":"^2.1.1","lucide-react":"^0.553.0","motion":"^12.23.24","next":"^15.5.29","react":"^19.2.1","react-dom":"^19.2.1","tailwind-merge":"^3.3.1"},"devDependencies":{"@tailwindcss/postcss":"4.1.11","@types/node":"^20","@types/react":"^19","@types/react-dom":"^19","autoprefixer":"^10.4.21","eslint":"^9.39.5","eslint-config-next":"^16.4.6","postcss":"^8.5.6","tailwindcss":"4.1.11","typescript":"5.9.3"},"name":"web-zip-archiver","private":true,"type":"module","scripts":{"build":"next build && cp worker/_worker.js out/_worker.js","clean":"rm -rf .next out","dev":"next dev","lint":"eslint .","preview":"node scripts/preview.mjs","start":"next start","test":"node --test worker/_worker.test.mjs","typecheck":"tsc --noEmit"},"version":"1.0.0"}
+{
+ "dependencies": {
+  "clsx": "^2.1.1",
+  "lucide-react": "^0.553.0",
+  "motion": "^12.23.24",
+  "next": "^15.5.29",
+  "react": "^19.2.1",
+  "react-dom": "^19.2.1",
+  "tailwind-merge": "^3.3.1"
+ },
+ "devDependencies": {
+  "@tailwindcss/postcss": "4.1.11",
+  "@types/node": "^20",
+  "@types/react": "^19",
+  "@types/react-dom": "^19",
+  "autoprefixer": "^10.4.21",
+  "eslint": "^9.39.5",
+  "eslint-config-next": "^16.4.6",
+  "tailwindcss": "4.1.11",
+  "typescript": "5.9.3"
+ },
+ "name": "web-zip-archiver",
+ "overrides": {
+  "postcss": "8.5.33"
+ },
+ "private": true,
+ "scripts": {
+  "build": "next build && cp worker/_worker.js out/_worker.js",
+  "clean": "rm -rf .next out",
+  "dev": "next dev",
+  "lint": "eslint .",
+  "preview": "node scripts/preview.mjs",
+  "start": "next start",
+  "test": "node --test worker/_worker.test.mjs",
+  "typecheck": "tsc --noEmit"
+ },
+ "type": "module",
+ "version": "1.0.0"
+}

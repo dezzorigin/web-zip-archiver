@@ -81,6 +81,19 @@ build dan tidak bisa deploy**.
 - Crawling tetap milik saveweb2zip.com — tidak ada crawling sendiri.
 - Lisensi MIT, copyright Nabil Aulia Dika.
 
+### Audit (pasca-PR, 18 Nov 2026)
+
+- Job `npm audit` CI awalnya merah: PostCSS high (4 GHSA) lewat
+  `next@15.5.29` yang membundel postcss@8.4.31 — ditutup dengan
+  `overrides: { "postcss": "8.5.33" }` di package.json (direct dep
+  postcss yang tak terpakai ikut dibuang).
+- Satu-satunya temuan high tersisa adalah picomatch ReDoS
+  (GHSA-fc5q-39xc-vjpf) lewat toolchain lint — belum ada versi patched
+  (patched: None), dan picomatch hanya jalan saat lint di file lokal
+  tepercaya, tidak dikirim ke pengguna. Job audit dibatasi ke dependensi
+  produksi (`--omit=dev`, tetap `--audit-level=high`); alasannya ditulis
+  di komentar `.github/workflows/ci.yml`.
+
 ## Sebelumnya (repo lama, pra-rebuild)
 
 - v0.1.0 — scaffolding AI Studio: form + `app/api/clone/*`, README 755
