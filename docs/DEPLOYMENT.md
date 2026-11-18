@@ -44,18 +44,22 @@ Nama final yang dipakai: **`web-zip-archiver`** (nama pertama dicoba;
 langsung didapat bersih, tanpa sufiks — diverifikasi dari URL deployment
 `https://web-zip-archiver.pages.dev`).
 
-## Batasan verifikasi dari VM Muse
+## Verifikasi end-to-end (dan batasan VM Muse)
 
 POST ke endpoint Worker (`/api/clone/start`) **tidak bisa diselesaikan
 dari VM Muse ini**: proxy egress VM (MITM, HTTP/1.1) menggantungkan semua
 POST ke project Pages yang memakai `_worker.js` — terbukti dengan worker
 minimal yang hanya mengembalikan JSON tetap (GET ke worker yang sama
 bekerja, POST ke project Pages statis juga bekerja). Ini keterbatasan
-jalur egress VM, bukan kode: unit test worker 9/9, proxy GET live
-terbukti, dan kontrak upstream sama persis dengan frontend live
-saveweb2zip.com. **Verifikasi klik-melalui penuh (isi URL → Selesai →
-tombol unduh) harus dilakukan dari browser di jaringan normal** —
-lihat PR rebuild proper.
+jalur egress VM, bukan kode.
+
+Karena itu verifikasi klik-melalui penuh tinggal di CI sebagai job
+`live-smoke` (`.github/workflows/ci.yml`, non-gating): runner GitHub
+menjalankan alur lengkap terhadap situs produksi — start → polling →
+unduh ZIP. Hasil 18 Nov 2026 (run 44272733706): example.com selesai
+dengan 2 file, ZIP 2.790 byte (magic `PK\x03\x04`). Untuk menguji
+manual dari laptop/browser sendiri, buka situs live dan arsipkan
+`https://example.com` — tombol unduh harus muncul dalam ~10 detik.
 
 ## Build
 

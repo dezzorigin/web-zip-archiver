@@ -68,11 +68,16 @@ build dan tidak bisa deploy**.
 - Live https://web-zip-archiver.pages.dev HTTP 200; proxy worker
   `GET /api/clone/status` terbukti meneruskan jawaban upstream sungguhan.
 - Screenshot asli (desktop + mobile) dan video tur UI di `docs/`.
-- **Belum terverifikasi dari VM Muse:** klik-melalui penuh (submit URL →
-  Selesai → tombol unduh). POST ke Worker menggantung di jalur egress VM
-  (terbukti bukan kode: worker minimal pun menggantung; GET dan POST ke
-  Pages statis bekerja). Butuh satu kali uji browser di jaringan normal —
-  lihat `docs/DEPLOYMENT.md`.
+- **Klik-melalui penuh TERVERIFIKASI** lewat job CI `live-smoke`
+  (runner GitHub, jaringan normal — 18 Nov 2026, run 44272733706):
+  `POST /api/clone/start` example.com → HTTP 200, md5
+  `b6fba141dd07e65df7284106588f37f5_1794992762539`; polling →
+  `isFinished: true, success: true, copiedFilesAmount: 2`;
+  `GET /api/downloadArchive/{md5}` → ZIP asli (magic `PK\x03\x04`,
+  2.790 byte). Catatan: POST ke Worker tidak bisa diselesaikan dari
+  VM Muse (jalur egress-nya menggantungkan POST ke project Pages
+  ber-Worker — terbukti bukan kode: worker minimal pun menggantung);
+  karena itu verifikasi end-to-end tinggal di CI, bukan di VM.
 
 ### Yang sengaja tidak berubah
 

@@ -13,9 +13,9 @@ Gratis, tanpa akun, tanpa instalasi.
 
 🎬 **Video demo (tur UI):** [docs/demo/demo.mp4](./docs/demo/demo.mp4)
 — landing, pengisian form, dan status pemrosesan. Langkah kloning sampai
-tombol unduh diverifikasi terpisah lewat browser di jaringan normal
-(POST ke Worker tidak bisa diselesaikan dari VM Muse — lihat
-[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)).
+tombol unduh terverifikasi end-to-end oleh job CI `live-smoke`
+(example.com → selesai, 2 file, ZIP asli) — lihat
+[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 
 ## Cara memakai
 
