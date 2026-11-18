@@ -10,6 +10,8 @@ __pycache__/
 dist/
 build/
 out/
+.wrangler/
+tsconfig.tsbuildinfo
 .DS_Store
 *.log
 
