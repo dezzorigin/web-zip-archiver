@@ -22,6 +22,22 @@ export const metadata: Metadata = {
     description:
       'Arsipkan situs web publik apa pun menjadi satu file ZIP yang dapat diunduh. Gratis, tanpa akun, tanpa instalasi.',
     type: 'website',
+    url: 'https://web-zip-archiver.pages.dev',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Web ZIP Archiver — ubah website menjadi arsip ZIP',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Web ZIP Archiver — Ubah Website Menjadi Arsip ZIP',
+    description:
+      'Arsipkan situs web publik apa pun menjadi satu file ZIP yang dapat diunduh. Gratis, tanpa akun, tanpa instalasi.',
+    images: ['/og-image.png'],
   },
 };
 
